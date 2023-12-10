@@ -37,8 +37,10 @@ app.get("/luno-price", async (req, res) => {
 });
 
 // Endpoint to calculate arbitrage rate
+
 app.get("/arbitrage-rate", async (req, res) => {
   try {
+    // Fetch Kraken and Luno prices
     const krakenResponse = await axios.get(
       "https://api.kraken.com/0/public/Depth?pair=XBTUSD"
     );
@@ -46,17 +48,40 @@ app.get("/arbitrage-rate", async (req, res) => {
       "https://api.luno.com/api/1/tickers?pair=XBTZAR"
     );
 
-    const krakenPrice = parseFloat(
+    console.log("Kraken Response:", krakenResponse.data);
+    console.log("Luno Response:", lunoResponse.data);
+
+    // Calculate Kraken USD price and Luno ZAR price
+    const krakenUsdPrice = parseFloat(
       krakenResponse.data.result.XXBTZUSD.asks[0][0]
     );
-    const zarUsdRate = parseFloat(lunoResponse.data.tickers[0].bid);
+    const lunoZarPrice = parseFloat(lunoResponse.data.tickers[0].bid);
 
-    const convertedZarUsdPrice = krakenPrice * zarUsdRate;
+    // Convert 1 USD to ZAR using the provided API
+    const usdToZarResponse = await axios.get(
+      "https://api.freecurrencyapi.com/v1/latest",
+      {
+        params: {
+          apikey: "fca_live_QsbQ2u6bbNWeoHG7EuI5Q6cTC178VoCStjJKWtYV",
+          base_currency: "USD",
+          currencies: "ZAR",
+        },
+      }
+    );
 
-    const lunoPrice = parseFloat(lunoResponse.data.tickers[0].bid);
+    console.log("USD to ZAR Response:", usdToZarResponse.data);
 
-    const difference = lunoPrice - convertedZarUsdPrice;
-    const arbitrageRate = difference / convertedZarUsdPrice;
+    // Extract the USD to ZAR exchange rate from the API response
+    const usdToZarRate = parseFloat(usdToZarResponse.data.data.ZAR);
+
+    // Convert Kraken USD price to ZAR using the exchange rate
+    const krakenZarPrice = krakenUsdPrice * usdToZarRate;
+
+    // Calculate the arbitrage rate
+    const difference = lunoZarPrice - krakenZarPrice;
+    console.log(difference);
+    const arbitragePercentage = difference / lunoZarPrice;
+    const arbitrageRate = arbitragePercentage * 100;
 
     res.json({ arbitrageRate });
   } catch (error) {
