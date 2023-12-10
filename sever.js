@@ -68,3 +68,11 @@ app.get("/arbitrage-rate", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+// Reference on the formula being used above
+// 1. Get US bitcoin price (Kraken)
+// 2. Get USD:ZAR rate
+// 3. Multiply USD bitcoin price by ZAR USD rate
+// 4. Get local bitcoin price (Luno)
+// 5. Subtract converted ZAR USD bitcoin price from local bitcoin price
+// 6. Take that difference, which is in ZAR and divide it by the converted ZAR USD bitcoin price
