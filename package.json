@@ -1,16 +1,16 @@
 {
-  "name": "pricing-sever-express",
+  "name": "sever",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sever Functions",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Caleb",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2"
   }
 }
