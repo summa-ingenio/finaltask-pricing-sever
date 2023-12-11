@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5013;
 app.use(cors());
 
 // Endpoint to get Kraken Bitcoin price in USD
-app.get("/kraken-price", async (req, res) => {
+app.get("/kraken-price", cors(), async (req, res) => {
   try {
     const response = await axios.get(
       "https://api.kraken.com/0/public/Depth?pair=XBTUSD"
@@ -23,7 +23,7 @@ app.get("/kraken-price", async (req, res) => {
 });
 
 // Endpoint to get Luno Bitcoin price in ZAR
-app.get("/luno-price", async (req, res) => {
+app.get("/luno-price", cors(), async (req, res) => {
   try {
     const response = await axios.get(
       "https://api.luno.com/api/1/tickers?pair=XBTZAR"
@@ -38,7 +38,7 @@ app.get("/luno-price", async (req, res) => {
 
 // Endpoint to calculate arbitrage rate
 
-app.get("/arbitrage-rate", async (req, res) => {
+app.get("/arbitrage-rate", cors(), async (req, res) => {
   try {
     // Fetch Kraken and Luno prices
     const krakenResponse = await axios.get(
